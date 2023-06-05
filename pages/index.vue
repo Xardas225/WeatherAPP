@@ -1,14 +1,17 @@
 <script setup>
 import { API_KEY, BASE_URL } from "@/constants/index";
 
-const city = ref("Paris");
+const city = ref("");
 const weatherInfo = ref(null);
 
 const getWeatherData = () => {
   fetch(`${BASE_URL}?q=${city.value}&units=metric&appid=${API_KEY}`)
     .then((res) => res.json())
-    .then((data) => (weatherInfo.value = data));
+    .then((data) => weatherInfo.value = data);
 };
+
+const isError = computed(() => weatherInfo.value?.cod !== 200);
+
 </script>
 
 <template>
@@ -22,7 +25,13 @@ const getWeatherData = () => {
         <div class="container">
           <div class="laptop">
             <div class="sections">
-              <section class="section section-left">
+              <section
+                :class="[
+                  'section',
+                  'section-left',
+                  { 'section-left-hidden': isError },
+                ]"
+              >
                 <div class="info">
                   <div class="city-inner">
                     <input
@@ -30,20 +39,28 @@ const getWeatherData = () => {
                       v-model="city"
                       type="text"
                       class="search"
+                      placeholder="Input a city"
                     />
                   </div>
-                  <TheWeatherSummary :weatherInfo="weatherInfo" />
+                  <TheWeatherSummary
+                    v-if="!isError"
+                    :weatherInfo="weatherInfo"
+                  />
                 </div>
               </section>
-              <section class="section section-right">
-                <TheHighlights 
-                  :weatherInfo="weatherInfo"
-                />
+              <section v-if="!isError" class="section section-right">
+                <TheHighlights :weatherInfo="weatherInfo" />
               </section>
             </div>
-            <div class="sections">
+            <div v-if="!isError" class="sections">
               <TheCoords :coord="weatherInfo?.coord" />
               <TheHumidity :humidity="weatherInfo?.main.humidity" />
+            </div>
+            <div v-else class="error">
+              <div class="error-title">Something went wrong</div>
+              <div v-if="weatherInfo?.message" class="error-message">
+                {{ weatherInfo?.message }}
+              </div>
             </div>
           </div>
         </div>
@@ -78,6 +95,10 @@ const getWeatherData = () => {
 .section-left
   width: 30%
   padding-right: 10px
+
+  &-hidden
+    width: auto
+    padding-right: 0px
 
   @media (max-width: 767px)
     width: 100%
@@ -133,4 +154,11 @@ const getWeatherData = () => {
 
   @media (max-width: 767px)
     width: 100%
+
+.error
+  text-align: center
+  &-title
+    margin: 10px 0
+    font-size: 20px
+    font-weight: bold
 </style>

@@ -2,15 +2,22 @@
 const props = defineProps({
   weatherInfo: {
     type: [Object, null],
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
-const getTime = (sec) => new Date(sec*1000).toLocaleTimeString('ru-RU') 
+const getTime = (sec) => new Date(sec * 1000).toLocaleTimeString("ru-RU");
 
-const sunriseTime = computed(() => getTime(props.weatherInfo?.sys.sunrise))
-const sunsetTime = computed(() => getTime(props.weatherInfo?.sys.sunset))
+const sunriseTime = computed(() => {
+  if (!props.weatherInfo?.sys.sunrise) return "";
 
+  return getTime(props.weatherInfo?.sys.sunrise);
+});
+const sunsetTime = computed(() => {
+  if (!props.weatherInfo?.sys.sunset) return "";
+
+  return getTime(props.weatherInfo?.sys.sunset);
+});
 </script>
 
 <template>
@@ -63,7 +70,9 @@ const sunsetTime = computed(() => getTime(props.weatherInfo?.sys.sunset))
           <div class="card-info">
             <div class="card-centered">
               <div class="info-main">
-                <div class="info-main-num">{{ weatherInfo?.main.pressure }}</div>
+                <div class="info-main-num">
+                  {{ weatherInfo?.main.pressure }}
+                </div>
                 <div class="info-main-text">mm</div>
               </div>
             </div>
@@ -73,7 +82,9 @@ const sunsetTime = computed(() => getTime(props.weatherInfo?.sys.sunset))
           <div class="card-small-title">Feels like</div>
           <div class="card-small-info">
             <div class="card-small-data">
-              <div class="info-main-num">{{ weatherInfo?.main.feels_like }}</div>
+              <div class="info-main-num">
+                {{ weatherInfo?.main.feels_like }}
+              </div>
               <div class="info-main-text">°C</div>
             </div>
             <div class="card-small-hint">
