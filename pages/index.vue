@@ -5,11 +5,9 @@ const city = ref("Paris");
 const weatherInfo = ref(null);
 
 const getWeatherData = () => {
-  fetch(
-    `${BASE_URL}?q=${city.value}&units=metric&appid=${API_KEY}`
-  )
-  .then((res)=> res.json())
-  .then((data) => weatherInfo.value = data)
+  fetch(`${BASE_URL}?q=${city.value}&units=metric&appid=${API_KEY}`)
+    .then((res) => res.json())
+    .then((data) => (weatherInfo.value = data));
 };
 </script>
 
@@ -38,20 +36,14 @@ const getWeatherData = () => {
                 </div>
               </section>
               <section class="section section-right">
-                <TheHighlights />
+                <TheHighlights 
+                  :weatherInfo="weatherInfo"
+                />
               </section>
             </div>
             <div class="sections">
-              <section class="section-bottom">
-                <TheCoords 
-                  :coord="weatherInfo?.coord"
-                />
-              </section>
-              <section class="section-bottom">
-                <TheHumidity 
-                  :humidity="weatherInfo?.main.humidity"
-                />
-              </section>
+              <TheCoords :coord="weatherInfo?.coord" />
+              <TheHumidity :humidity="weatherInfo?.main.humidity" />
             </div>
           </div>
         </div>

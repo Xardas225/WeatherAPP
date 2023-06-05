@@ -6,7 +6,13 @@ const props = defineProps({
   },
 });
 
-const getCurrentDate = () => new Date().toLocaleString("en-En", {weekday: 'short', year: 'numeric', month: 'long', day: 'numeric'});
+const getCurrentDate = () =>
+  new Date().toLocaleString("en-En", {
+    weekday: "short",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
 const capitalizeFirstLetter = (text) => text[0].toUpperCase() + text.slice(1);
 
@@ -19,9 +25,7 @@ const getImageUrl = (text) => {
 <template>
   <div v-if="weatherInfo" class="summary">
     <div class="pic-main">
-      <img
-        :src="getImageUrl(weatherInfo?.weather[0].description)"
-      />
+      <img :src="getImageUrl(weatherInfo?.weather[0].description)" />
     </div>
     <div class="weather">
       <div class="temp">{{ Math.ceil(weatherInfo?.main.temp) }} °C</div>
