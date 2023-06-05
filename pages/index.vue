@@ -4,19 +4,21 @@ import { API_KEY, BASE_URL } from "@/constants/index";
 const city = ref("Paris");
 const weatherInfo = ref(null);
 
-const getWeatherData = async () => {
-  const { data } = await useFetch(
-    `${BASE_URL}?q=${city.value}&appid=${API_KEY}`
-  );
-  weatherInfo.value = data;
-  console.log(weatherInfo.value);
+const getWeatherData = () => {
+  const { data } = fetch(
+    `${BASE_URL}?q=${city.value}&units=metric&appid=${API_KEY}`
+  )
+  .then((res)=> res.json())
+  .then((data) => weatherInfo.value = data)
 };
-
-getWeatherData();
 </script>
 
 <template>
   <div>
+    <HEAD>
+      <title>Weather App</title>
+    </HEAD>
+
     <div class="page">
       <main class="main">
         <div class="container">
@@ -25,9 +27,14 @@ getWeatherData();
               <section class="section section-left">
                 <div class="info">
                   <div class="city-inner">
-                    <input @keyup.enter="getWeatherData" v-model="city" type="text" class="search" />
+                    <input
+                      @keyup.enter="getWeatherData"
+                      v-model="city"
+                      type="text"
+                      class="search"
+                    />
                   </div>
-                  <TheWeatherSummary />
+                  <TheWeatherSummary :weatherInfo="weatherInfo" />
                 </div>
               </section>
               <section class="section section-right">
